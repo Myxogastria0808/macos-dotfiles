@@ -1,0 +1,52 @@
+# https://ghostty.org/docs/config
+
+# ─── Appearance ───────────────────────────────────────────────────────────────
+background = #130017
+background-opacity = 0.850000
+theme = Desert
+unfocused-split-opacity = 1
+
+# ─── Font ─────────────────────────────────────────────────────────────────────
+font-family = 0xProto Nerd Font
+font-family = Hiragino Sans
+font-feature = -calt
+font-feature = -liga
+font-feature = -dlig
+
+# ─── Keybindings ──────────────────────────────────────────────────────────────
+# Tab
+keybind = ctrl+alt+n=new_tab
+keybind = ctrl+alt+left_bracket=previous_tab
+keybind = ctrl+alt+right_bracket=next_tab
+# Split
+keybind = ctrl+alt+r=new_split:right
+keybind = ctrl+alt+l=new_split:left
+keybind = ctrl+alt+t=new_split:up
+keybind = ctrl+alt+b=new_split:down
+# Split navigation
+keybind = ctrl+alt+right=goto_split:right
+keybind = ctrl+alt+left=goto_split:left
+keybind = ctrl+alt+up=goto_split:top
+keybind = ctrl+alt+down=goto_split:bottom
+# Split resize
+keybind = ctrl+alt+cmd+right=resize_split:right,10
+keybind = ctrl+alt+cmd+left=resize_split:left,10
+keybind = ctrl+alt+cmd+up=resize_split:up,10
+keybind = ctrl+alt+cmd+down=resize_split:down,10
+# Close
+keybind = ctrl+alt+q=close_surface
+keybind = ctrl+alt+d=close_window
+
+# ─── Notification ─────────────────────────────────────────────────────────────
+notify-on-command-finish = always
+notify-on-command-finish-action = bell,no-notify
+notify-on-command-finish-after = 5s
+
+# ─── Color ────────────────────────────────────────────────────────────────────
+palette = 5=#FF54B7
+
+# ─── Working directory ────────────────────────────────────────────────────────
+working-directory = home
+split-inherit-working-directory = true
+tab-inherit-working-directory = true
+window-inherit-working-directory = false

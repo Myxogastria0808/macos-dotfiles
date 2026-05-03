@@ -8,7 +8,7 @@
 {
   home = {
     username = "${username}";
-    homeDirectory = "/home/${username}";
+    homeDirectory = "/Users/${username}";
     stateVersion = "25.11"; # Please read the comment before changing.
   };
   home.packages = [
@@ -18,4 +18,3 @@
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
 }
-
