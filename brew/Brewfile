@@ -12,7 +12,8 @@ brew "opam"
 # Julia version manager
 brew "juliaup"
 # R version manager
-brew "rig"
+tap "r-lib/rig"
+cask "rig"
 # Python package manager
 brew "uv"
 # Dock management CLI
@@ -59,8 +60,8 @@ brew "tty-clock"
 brew "typst"
 # Application uninstaller
 cask "appcleaner"
-# Prolog interpreter (includes GUI and CLI)
-cask "swi-prolog"
+# Prolog interpreter
+brew "swi-prolog"
 # R IDE
 cask "rstudio"
 # Desktop password and login vault

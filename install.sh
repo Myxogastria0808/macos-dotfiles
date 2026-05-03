@@ -3,13 +3,6 @@ set -euo pipefail
 
 DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-sudo -v
-while true; do
-	sudo -n true
-	sleep 60
-	kill -0 "$$" || exit
-done 2>/dev/null &
-
 # ─── Xcode ────────────────────────────────────────────────────────────────────
 echo "==> Xcode"
 if ! [ -d "/Applications/Xcode.app" ]; then
@@ -58,7 +51,7 @@ uv python install
 
 # ─── R ────────────────────────────────────────────────────────────────────────
 echo "==> R"
-rig add release
+sudo rig add release
 
 # ─── Julia ────────────────────────────────────────────────────────────────────
 echo "==> Julia"
@@ -86,7 +79,10 @@ nix run home-manager/master -- switch --flake "$DOTFILES_DIR#macos"
 
 # ─── Mouse ────────────────────────────────────────────────────────────────────
 echo "==> Mouse"
-defaults write com.apple.universalaccess mouseDriverCursorSize -float 2.5
+if ! defaults write com.apple.universalaccess mouseDriverCursorSize -float 2.5 2>/dev/null; then
+	echo "Error: Failed to set cursor size."
+	echo "  => Grant Accessibility permission to your terminal in System Settings > Privacy & Security > Accessibility, then re-run."
+fi
 
 # ─── Menu Bar ─────────────────────────────────────────────────────────────────
 echo "==> Menu Bar"
@@ -135,19 +131,10 @@ dockutil --add /Applications/Bitwarden.app --no-restart
 
 # ─── SSH (Remote Login) ───────────────────────────────────────────────────────
 echo "==> SSH"
-sudo systemsetup -setremotelogin on
-
-# ─── Ollama models ────────────────────────────────────────────────────────────
-echo "==> Ollama models"
-ollama pull qwen3.5:0.8b
-ollama pull qwen3.5:2b
-ollama pull qwen3.5:4b
-ollama pull qwen3.5:9b
-ollama pull qwen3.5:27b
-ollama pull qwen3.5:35b
-ollama pull qwen3.5:122b
-ollama pull qwen3.6:27b
-ollama pull qwen3.6:35b
+if ! sudo systemsetup -setremotelogin on 2>/dev/null; then
+	echo "Error: Failed to enable Remote Login."
+	echo "  => Grant Full Disk Access to your terminal in System Settings > Privacy & Security > Full Disk Access, then re-run."
+fi
 
 # ─── VNC (Screen Sharing) ─────────────────────────────────────────────────────
 echo "==> VNC"
