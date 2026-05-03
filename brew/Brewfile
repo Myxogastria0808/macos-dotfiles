@@ -1,6 +1,22 @@
 tap "mtgto/macskk"
 # Clone of cat(1) with syntax highlighting and Git integration
 brew "bat"
+# Lean4 version manager
+brew "elan-init"
+# Haskell toolchain manager
+brew "ghcup"
+# Haskell build tool
+brew "stack"
+# OCaml package manager
+brew "opam"
+# Julia version manager
+brew "juliaup"
+# R version manager
+brew "rig"
+# Python package manager
+brew "uv"
+# Dock management CLI
+brew "dockutil"
 # Console-based Audio Visualizer for ALSA
 brew "cava"
 # Load/unload environment variables based on $PWD
@@ -43,6 +59,10 @@ brew "tty-clock"
 brew "typst"
 # Application uninstaller
 cask "appcleaner"
+# Prolog interpreter (includes GUI and CLI)
+cask "swi-prolog"
+# R IDE
+cask "rstudio"
 # Desktop password and login vault
 cask "bitwarden"
 # Anthropic's official Claude AI desktop app
