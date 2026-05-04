@@ -47,16 +47,7 @@ brew bundle --file="$DOTFILES_DIR/brew/Brewfile"
 ok "Brewfile applied"
 
 # ─── Nix (Determinate Systems: flakes + nix-command enabled by default) ───────
-echo "==> Nix"
-if ! command -v nix &>/dev/null; then
-	curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix |
-		sh -s -- install macos --encrypt false --no-confirm
-	# shellcheck source=/dev/null
-	. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
-	ok "Nix installed → $(nix --version)"
-else
-	skip "Nix (already installed: $(nix --version))"
-fi
+"$DOTFILES_DIR/scripts/nix.sh"
 
 # ─── dotfiles (symlink) ───────────────────────────────────────────────────────
 echo "==> dotfiles"
