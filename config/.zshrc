@@ -1,4 +1,4 @@
-DOTFILES_DIR="$HOME/Desktop/macos-dotfiles"
+DOTFILES_DIR="$HOME/macos-dotfiles"
 
 # ─── Completion ───────────────────────────────────────────────────────────────
 autoload -Uz compinit && compinit
