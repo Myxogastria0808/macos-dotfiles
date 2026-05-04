@@ -25,3 +25,4 @@ for _entry in "Tailscale:/Applications/Tailscale.app" "Ollama:/Applications/Olla
 	fi
 done
 unset _login_items _entry _name _path
+

@@ -28,3 +28,4 @@ if [ -n "$VNC_PASSWORD" ]; then
 else
 	skip "VNC (no password provided)"
 fi
+

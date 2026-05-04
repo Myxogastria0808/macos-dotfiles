@@ -50,3 +50,4 @@ working-directory = home
 split-inherit-working-directory = true
 tab-inherit-working-directory = true
 window-inherit-working-directory = false
+

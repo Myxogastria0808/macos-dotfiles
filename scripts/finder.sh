@@ -15,3 +15,4 @@ defaults write NSGlobalDomain AppleShowAllExtensions -bool true
 ok "File extensions → always visible"
 killall Finder
 ok "Finder restarted"
+

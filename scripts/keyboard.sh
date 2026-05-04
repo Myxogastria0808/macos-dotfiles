@@ -13,3 +13,4 @@ defaults write NSGlobalDomain KeyRepeat -int 2
 ok "Key repeat rate → 2 (30ms per key)"
 defaults write NSGlobalDomain InitialKeyRepeat -int 20
 ok "Initial repeat delay → 20 (300ms)"
+

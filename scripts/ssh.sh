@@ -15,3 +15,4 @@ else
 	err "Failed to enable Remote Login"
 	action "Required: System Settings > Privacy & Security > Full Disk Access → add your terminal, then re-run."
 fi
+

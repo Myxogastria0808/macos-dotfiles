@@ -17,3 +17,4 @@ if ! defaults read com.apple.HIToolbox AppleEnabledInputSources 2>/dev/null | gr
 else
 	skip "macSKK (already registered)"
 fi
+

@@ -36,3 +36,4 @@ if [ -n "$LOCAL_NAME" ]; then
 else
 	skip "LocalHostName / HostName"
 fi
+

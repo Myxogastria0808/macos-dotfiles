@@ -38,3 +38,4 @@ for _entry in "${_apps[@]}"; do
 	ok "Pinned → $_name"
 done
 unset _apps _entry _name _path
+

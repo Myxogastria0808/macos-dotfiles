@@ -14,3 +14,4 @@ if defaults write com.apple.universalaccess mouseDriverCursorSize -float 2.5 2>/
 else
 	err "Failed to set cursor size"
 fi
+
