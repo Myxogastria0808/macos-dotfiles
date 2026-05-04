@@ -2,6 +2,8 @@
 
 My personal macOS dotfiles for Apple Silicon (M-series) Macs.
 
+> **Supported OS**: macOS 26 only. Other versions are not supported.
+
 ## Overview
 
 - **Package management**: Homebrew (primary), Nix (for Neovim only)
@@ -34,6 +36,7 @@ macos-dotfiles/
     ├── ime.sh           # macSKK input method
     ├── dock.sh          # Dock layout and pinned apps
     ├── startup.sh       # Login items (Tailscale, Ollama)
+    ├── tailscale.sh     # Tailscale service start + tailscale up (SSH, routes)
     ├── hostname.sh      # Computer name / LocalHostName / HostName
     ├── ssh.sh           # Remote Login (SSH)
     └── vnc.sh           # Remote Management (VNC)
@@ -41,7 +44,8 @@ macos-dotfiles/
 
 ## Prerequisites
 
-Install [Xcode](https://apps.apple.com/jp/app/xcode/id497799835) from the App Store before running the setup script.
+- **macOS 26** (Apple Silicon) — this is the only supported OS version
+- Install [Xcode](https://apps.apple.com/jp/app/xcode/id497799835) from the App Store before running the setup script.
 
 ## Setup
 

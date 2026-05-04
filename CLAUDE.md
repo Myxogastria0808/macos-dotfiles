@@ -49,14 +49,15 @@ Linear bootstrap script. Sections in order:
 
 Each script is self-contained and independently executable. All source `scripts/_lib.sh` for shared logging (`ok`, `skip`, `err`, `action`).
 
-| Script | Requires |
-|--------|---------|
-| `mouse.sh`, `menubar.sh`, `finder.sh`, `keyboard.sh`, `ime.sh` | `defaults` (always present) |
-| `dock.sh` | `dockutil` (from Brewfile) |
-| `startup.sh` | `osascript` (always present) |
-| `hostname.sh` | `scutil` (always present), interactive |
-| `ssh.sh` | `/usr/sbin/systemsetup` (always present) |
-| `vnc.sh` | ARDAgent `kickstart` binary, interactive |
+| Script                                                         | Requires                                 |
+| -------------------------------------------------------------- | ---------------------------------------- |
+| `mouse.sh`, `menubar.sh`, `finder.sh`, `keyboard.sh`, `ime.sh` | `defaults` (always present)              |
+| `dock.sh`                                                      | `dockutil` (from Brewfile)               |
+| `startup.sh`                                                   | `osascript` (always present)             |
+| `tailscale.sh`                                                 | `tailscale` (from Brewfile)              |
+| `hostname.sh`                                                  | `scutil` (always present), interactive   |
+| `ssh.sh`                                                       | `/usr/sbin/systemsetup` (always present) |
+| `vnc.sh`                                                       | ARDAgent `kickstart` binary, interactive |
 
 ### Logging conventions (`scripts/_lib.sh`)
 
@@ -77,3 +78,4 @@ Each script is self-contained and independently executable. All source `scripts/
 - Guards before every language install to ensure idempotency
 - `DOTFILES_DIR` is set in `.zshrc` and in `install.sh` (via `${BASH_SOURCE[0]}`) — never hardcode paths
 - `brew-update` (`.zshrc` function) = `brew bundle dump --force` + git commit + push
+

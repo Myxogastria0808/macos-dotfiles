@@ -8,12 +8,17 @@ if ! command -v defaults &>/dev/null; then
 fi
 
 echo "==> IME"
-if ! defaults read com.apple.HIToolbox AppleEnabledInputSources 2>/dev/null | grep -q "net.mtgto.inputmethod.macSKK"; then
-	defaults write com.apple.HIToolbox AppleEnabledInputSources -array-add \
+# Input Mode エントリが存在するかで「正しく登録済み」と判断する
+if ! defaults read com.apple.HIToolbox AppleEnabledInputSources 2>/dev/null \
+		| grep -A2 "net.mtgto.inputmethod.macSKK" | grep -q "Input Mode"; then
+	defaults write com.apple.HIToolbox AppleEnabledInputSources -array \
+		'<dict><key>InputSourceKind</key><string>Keyboard Layout</string><key>KeyboardLayout ID</key><integer>252</integer><key>KeyboardLayout Name</key><string>ABC</string></dict>' \
+		'<dict><key>Bundle ID</key><string>net.mtgto.inputmethod.macSKK</string><key>Input Mode</key><string>net.mtgto.inputmethod.macSKK.hiragana</string><key>InputSourceKind</key><string>Input Mode</string></dict>' \
 		'<dict><key>Bundle ID</key><string>net.mtgto.inputmethod.macSKK</string><key>InputSourceKind</key><string>Keyboard Input Method</string></dict>'
+	defaults write com.apple.HIToolbox AppleSelectedInputSources -array \
+		'<dict><key>Bundle ID</key><string>net.mtgto.inputmethod.macSKK</string><key>Input Mode</key><string>net.mtgto.inputmethod.macSKK.hiragana</string><key>InputSourceKind</key><string>Input Mode</string></dict>'
 	killall -SIGKILL SystemUIServer
-	ok "macSKK registered, SystemUIServer restarted"
+	ok "macSKK set as Japanese IME, SystemUIServer restarted"
 else
 	skip "macSKK (already registered)"
 fi
-
