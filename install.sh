@@ -127,7 +127,7 @@ fi
 
 # ─── Lean4 ────────────────────────────────────────────────────────────────────
 echo "==> Lean4"
-if [ ! -x "$HOME/.elan/bin/lean" ]; then
+if ! command -v lean &>/dev/null; then
 	elan default stable
 	ok "Lean4 stable toolchain installed"
 else
