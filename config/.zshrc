@@ -208,6 +208,16 @@ peco-src() {
 zle -N peco-src
 bindkey '^g' peco-src
 
+# ─── Functions (cont.) ────────────────────────────────────────────────────────
+
+# brew-update: dump installed packages to Brewfile and push to remote
+brew-update() {
+	brew bundle dump --force --file="$DOTFILES_DIR/brew/Brewfile"
+	git -C "$DOTFILES_DIR" add brew/Brewfile
+	git -C "$DOTFILES_DIR" commit -m "chore: update Brewfile"
+	git -C "$DOTFILES_DIR" push
+}
+
 # ─── Aliases ──────────────────────────────────────────────────────────────────
 # Navigation
 alias ..='cd ../'
@@ -232,4 +242,5 @@ alias d='lazydocker'
 alias clone='ghq get'
 alias clock='tty-clock -c -s'
 alias music='cava'
+alias tetris='bastet'
 

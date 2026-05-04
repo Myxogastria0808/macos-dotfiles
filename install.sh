@@ -97,14 +97,15 @@ killall Finder
 
 # ─── Keyboard ─────────────────────────────────────────────────────────────────
 echo "==> Keyboard"
-defaults write NSGlobalDomain KeyRepeat -int 1
-defaults write NSGlobalDomain InitialKeyRepeat -int 10
+defaults write NSGlobalDomain KeyRepeat -int 2
+defaults write NSGlobalDomain InitialKeyRepeat -int 20
 
 # ─── IME (macSKK) ─────────────────────────────────────────────────────────────
 echo "==> IME"
 if ! defaults read com.apple.HIToolbox AppleEnabledInputSources 2>/dev/null | grep -q "net.mtgto.inputmethod.macSKK"; then
 	defaults write com.apple.HIToolbox AppleEnabledInputSources -array-add \
 		'<dict><key>Bundle ID</key><string>net.mtgto.inputmethod.macSKK</string><key>InputSourceKind</key><string>Keyboard Input Method</string></dict>'
+	killall -SIGKILL SystemUIServer
 fi
 
 # ─── Dock ─────────────────────────────────────────────────────────────────────
@@ -115,19 +116,57 @@ defaults write com.apple.dock autohide -bool false
 defaults write com.apple.dock show-recents -bool false
 
 dockutil --remove all --no-restart
-dockutil --add /System/Library/CoreServices/Finder.app --no-restart
 dockutil --add /System/Applications/System\ Settings.app --no-restart
 dockutil --add /System/Applications/Apps.app --no-restart
 dockutil --add /Applications/Google\ Chrome.app --no-restart
+dockutil --add /Applications/Discord.app --no-restart
+dockutil --add /Applications/Slack.app --no-restart
 dockutil --add /Applications/Ghostty.app --no-restart
 dockutil --add /Applications/Claude.app --no-restart
 dockutil --add /Applications/Codex.app --no-restart
-dockutil --add /Applications/Discord.app --no-restart
-dockutil --add /Applications/Slack.app --no-restart
 dockutil --add /Applications/Ollama.app --no-restart
 dockutil --add /Applications/Notion.app --no-restart
 dockutil --add '/Applications/Notion Calendar.app' --no-restart
 dockutil --add /Applications/Bitwarden.app --no-restart
+
+# ─── Startup ──────────────────────────────────────────────────────────────────
+echo "==> Startup"
+_login_items=$(osascript -e 'tell application "System Events" to get the name of every login item' 2>/dev/null || true)
+for _entry in "Tailscale:/Applications/Tailscale.app" "Ollama:/Applications/Ollama.app"; do
+	_name="${_entry%%:*}"
+	_path="${_entry#*:}"
+	if ! echo "$_login_items" | grep -q "$_name"; then
+		if ! osascript -e "tell application \"System Events\" to make login item at end with properties {path:\"$_path\", hidden:true, name:\"$_name\"}" 2>/dev/null; then
+			echo "Error: Failed to add $_name to login items."
+			echo "  => Grant Automation permission to your terminal in System Settings > Privacy & Security > Automation, then re-run."
+		fi
+	fi
+done
+unset _login_items _entry _name _path
+
+# ─── Hostname ─────────────────────────────────────────────────────────────────
+echo "==> Hostname"
+read -r -p "Computer name (shown in Finder/AirDrop; spaces and Unicode allowed; empty to skip): " COMPUTER_NAME
+while true; do
+	read -r -p "Local/Host name (used for Bonjour and shell prompt; alphanumeric and hyphens only, must not start or end with a hyphen; empty to skip): " LOCAL_NAME
+	if [ -z "$LOCAL_NAME" ]; then
+		break
+	elif [[ "$LOCAL_NAME" =~ ^[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?$ ]]; then
+		break
+	else
+		echo "Error: Invalid format. Use only letters, digits, and hyphens; do not start or end with a hyphen."
+	fi
+done
+if [ -n "$COMPUTER_NAME" ]; then
+	sudo scutil --set ComputerName "$COMPUTER_NAME"
+fi
+if [ -n "$LOCAL_NAME" ]; then
+	sudo scutil --set LocalHostName "$LOCAL_NAME"
+	sudo scutil --set HostName "$LOCAL_NAME"
+fi
+if [ -z "$COMPUTER_NAME" ] && [ -z "$LOCAL_NAME" ]; then
+	echo "Skipped."
+fi
 
 # ─── SSH (Remote Login) ───────────────────────────────────────────────────────
 echo "==> SSH"
@@ -136,14 +175,14 @@ if ! sudo systemsetup -setremotelogin on 2>/dev/null; then
 	echo "  => Grant Full Disk Access to your terminal in System Settings > Privacy & Security > Full Disk Access, then re-run."
 fi
 
-# ─── VNC (Screen Sharing) ─────────────────────────────────────────────────────
+# ─── VNC (Remote Management) ──────────────────────────────────────────────────
 echo "==> VNC"
 read -rs -p "VNC password (empty to skip): " VNC_PASSWORD
 echo ""
 if [ -n "$VNC_PASSWORD" ]; then
-	sudo launchctl load -w /System/Library/LaunchDaemons/com.apple.screensharing.plist
 	sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart \
-		-configure -clientopts -setvnclegacy -vnclegacy yes \
+		-activate -configure -access -on \
+		-clientopts -setvnclegacy -vnclegacy yes \
 		-clientopts -setvncpw -vncpw "$VNC_PASSWORD"
 else
 	echo "Skipped."
