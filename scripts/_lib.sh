@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 
 ok() { printf "  \033[0;32m✓\033[0m  %s\n" "$*"; }
 skip() { printf "  \033[0;33m–\033[0m  %s\n" "$*"; }

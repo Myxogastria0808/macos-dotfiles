@@ -50,7 +50,7 @@ Install [Xcode](https://apps.apple.com/jp/app/xcode/id497799835) from the App St
 ```sh
 git clone https://github.com/<your-username>/macos-dotfiles.git ~/macos-dotfiles
 cd ~/macos-dotfiles
-sh install.sh
+./install.sh
 ```
 
 > Forking lets you customize the Brewfile, Dock layout, and other settings for your own machine, and push changes back with `brew-update`.
@@ -106,8 +106,8 @@ brew-update
 Each script in `scripts/` can be run independently:
 
 ```sh
-sh ~/macos-dotfiles/scripts/dock.sh
-sh ~/macos-dotfiles/scripts/keyboard.sh
+./scripts/dock.sh
+./scripts/keyboard.sh
 # ...
 ```
 

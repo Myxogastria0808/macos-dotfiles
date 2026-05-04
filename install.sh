@@ -1,8 +1,7 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 set -euo pipefail
 
-DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-# shellcheck source=scripts/_lib.sh
+DOTFILES_DIR="${0:a:h}"
 source "$DOTFILES_DIR/scripts/_lib.sh"
 
 # ─── Xcode ────────────────────────────────────────────────────────────────────
@@ -19,8 +18,8 @@ echo "Xcode: OK"
 echo "==> Git"
 echo "  Current: user.name  = $(git config --global user.name 2>/dev/null || echo '(not set)')"
 echo "  Current: user.email = $(git config --global user.email 2>/dev/null || echo '(not set)')"
-read -r -p "Git user name (empty to skip): " GIT_NAME
-read -r -p "Git user email (empty to skip): " GIT_EMAIL
+read -r "GIT_NAME?Git user name (empty to skip): "
+read -r "GIT_EMAIL?Git user email (empty to skip): "
 if [ -n "$GIT_NAME" ]; then
 	git config --global user.name "$GIT_NAME"
 else
@@ -141,16 +140,16 @@ nix run home-manager/master -- switch --flake "$DOTFILES_DIR#macos"
 ok "home-manager switch applied"
 
 # ─── macOS config ─────────────────────────────────────────────────────────────
-bash "$DOTFILES_DIR/scripts/mouse.sh"
-bash "$DOTFILES_DIR/scripts/menubar.sh"
-bash "$DOTFILES_DIR/scripts/finder.sh"
-bash "$DOTFILES_DIR/scripts/keyboard.sh"
-bash "$DOTFILES_DIR/scripts/ime.sh"
-bash "$DOTFILES_DIR/scripts/dock.sh"
-bash "$DOTFILES_DIR/scripts/startup.sh"
-bash "$DOTFILES_DIR/scripts/hostname.sh"
-bash "$DOTFILES_DIR/scripts/ssh.sh"
-bash "$DOTFILES_DIR/scripts/vnc.sh"
+"$DOTFILES_DIR/scripts/mouse.sh"
+"$DOTFILES_DIR/scripts/menubar.sh"
+"$DOTFILES_DIR/scripts/finder.sh"
+"$DOTFILES_DIR/scripts/keyboard.sh"
+"$DOTFILES_DIR/scripts/ime.sh"
+"$DOTFILES_DIR/scripts/dock.sh"
+"$DOTFILES_DIR/scripts/startup.sh"
+"$DOTFILES_DIR/scripts/hostname.sh"
+"$DOTFILES_DIR/scripts/ssh.sh"
+"$DOTFILES_DIR/scripts/vnc.sh"
 
 echo ""
 printf "\033[1m%s\033[0m\n" "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"

@@ -1,7 +1,6 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 set -euo pipefail
-# shellcheck source=_lib.sh
-source "$(dirname "${BASH_SOURCE[0]}")/_lib.sh"
+source "${0:a:h}/_lib.sh"
 
 KICKSTART="/System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart"
 
@@ -11,7 +10,7 @@ if [ ! -f "$KICKSTART" ]; then
 fi
 
 echo "==> VNC"
-read -rs -p "VNC password (empty to skip): " VNC_PASSWORD
+read -rs "VNC_PASSWORD?VNC password (empty to skip): "
 echo ""
 if [ -n "$VNC_PASSWORD" ]; then
 	sudo launchctl unload -w /System/Library/LaunchDaemons/com.apple.screensharing.plist 2>/dev/null || true
@@ -28,4 +27,3 @@ if [ -n "$VNC_PASSWORD" ]; then
 else
 	skip "VNC (no password provided)"
 fi
-

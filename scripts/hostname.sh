@@ -1,7 +1,6 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 set -euo pipefail
-# shellcheck source=_lib.sh
-source "$(dirname "${BASH_SOURCE[0]}")/_lib.sh"
+source "${0:a:h}/_lib.sh"
 
 if ! command -v scutil &>/dev/null; then
 	err "'scutil' not found. This script requires macOS."
@@ -12,9 +11,9 @@ echo "==> Hostname"
 echo "  Current: ComputerName  = $(scutil --get ComputerName 2>/dev/null || echo '(not set)')"
 echo "  Current: LocalHostName = $(scutil --get LocalHostName 2>/dev/null || echo '(not set)')"
 echo "  Current: HostName      = $(scutil --get HostName 2>/dev/null || echo '(not set)')"
-read -r -p "Computer name (shown in Finder/AirDrop; spaces and Unicode allowed; empty to skip): " COMPUTER_NAME
+read -r "COMPUTER_NAME?Computer name (shown in Finder/AirDrop; spaces and Unicode allowed; empty to skip): "
 while true; do
-	read -r -p "Local/Host name (used for Bonjour and shell prompt; alphanumeric and hyphens only, must not start or end with a hyphen; empty to skip): " LOCAL_NAME
+	read -r "LOCAL_NAME?Local/Host name (used for Bonjour and shell prompt; alphanumeric and hyphens only, must not start or end with a hyphen; empty to skip): "
 	if [ -z "$LOCAL_NAME" ]; then
 		break
 	elif [[ "$LOCAL_NAME" =~ ^[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?$ ]]; then
@@ -36,4 +35,3 @@ if [ -n "$LOCAL_NAME" ]; then
 else
 	skip "LocalHostName / HostName"
 fi
-

@@ -1,7 +1,6 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 set -euo pipefail
-# shellcheck source=_lib.sh
-source "$(dirname "${BASH_SOURCE[0]}")/_lib.sh"
+source "${0:a:h}/_lib.sh"
 
 if ! command -v dockutil &>/dev/null; then
 	err "'dockutil' not found. Install it with: brew install dockutil"
