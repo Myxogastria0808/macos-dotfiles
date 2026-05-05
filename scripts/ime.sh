@@ -8,33 +8,37 @@ if ! command -v defaults &>/dev/null; then
 fi
 
 echo "==> IME"
-# Keyboard Input Method + Input Mode の両エントリが有効、かつ選択済みかで判断する
-_skk_enabled() {
-	local sources
-	sources=$(defaults read com.apple.HIToolbox AppleEnabledInputSources 2>/dev/null)
-	echo "$sources" | grep -q "Keyboard Input Method" &&
-		echo "$sources" | grep -A2 "net.mtgto.inputmethod.macSKK" | grep -q "Input Mode"
-}
-_skk_selected() {
-	defaults read com.apple.HIToolbox AppleSelectedInputSources 2>/dev/null |
-		grep -q "net.mtgto.inputmethod.macSKK"
-}
-if ! _skk_enabled || ! _skk_selected; then
-	defaults write com.apple.HIToolbox AppleEnabledInputSources -array \
-		'<dict><key>InputSourceKind</key><string>Keyboard Layout</string><key>KeyboardLayout ID</key><integer>252</integer><key>KeyboardLayout Name</key><string>ABC</string></dict>' \
-		'<dict><key>Bundle ID</key><string>net.mtgto.inputmethod.macSKK</string><key>Input Mode</key><string>net.mtgto.inputmethod.macSKK.hiragana</string><key>InputSourceKind</key><string>Input Mode</string></dict>' \
-		'<dict><key>Bundle ID</key><string>net.mtgto.inputmethod.macSKK</string><key>InputSourceKind</key><string>Keyboard Input Method</string></dict>'
-	defaults write com.apple.HIToolbox AppleSelectedInputSources -array \
-		'<dict><key>Bundle ID</key><string>net.mtgto.inputmethod.macSKK</string><key>Input Mode</key><string>net.mtgto.inputmethod.macSKK.hiragana</string><key>InputSourceKind</key><string>Input Mode</string></dict>'
-	killall -SIGKILL SystemUIServer
-	ok "macSKK set as Japanese IME, SystemUIServer restarted"
-else
+if defaults read com.apple.HIToolbox AppleEnabledInputSources 2>/dev/null | grep -q "net.mtgto.inputmethod.macSKK"; then
 	skip "macSKK (already registered)"
+else
+	swift "${0:a:h}/set-input-source.swift"
+	killall -SIGKILL SystemUIServer
+	ok "macSKK enabled via TIS API"
 fi
 
 # ─── macSKK dictionaries ──────────────────────────────────────────────────────
 echo "==> macSKK dictionaries"
 _MACSKK_DICTS="$HOME/Library/Containers/net.mtgto.inputmethod.macSKK/Data/Documents/Dictionaries"
+_PLIST="$HOME/Library/Containers/net.mtgto.inputmethod.macSKK/Data/Library/Preferences/net.mtgto.inputmethod.macSKK.plist"
+
+# Dictionaries フォルダがなければ macSKK を起動して作らせる
+if [ ! -d "$_MACSKK_DICTS" ]; then
+	open "/Library/Input Methods/macSKK.app"
+	local i=0
+	while [ ! -d "$_MACSKK_DICTS" ] && [ $i -lt 15 ]; do
+		sleep 1
+		i=$((i + 1))
+	done
+fi
+if [ ! -d "$_MACSKK_DICTS" ]; then
+	action "macSKK container not initialized → launch macSKK manually, then re-run: bash $DOTFILES_DIR/scripts/ime.sh"
+	return 0 2>/dev/null || exit 0
+fi
+
+# ダウンロード中に macSKK がファイルを検出して enabled=false で追加するのを防ぐため
+# ダウンロード前に停止する
+killall macSKK 2>/dev/null || true
+
 _DICT_BASE="https://raw.githubusercontent.com/skk-dev/dict/master"
 
 # ヘッダの coding: を見て EUC-JP → UTF-8 変換するか判断する
@@ -75,3 +79,38 @@ _fetch_dict SKK-JISYO.itaiji       SKK-JISYO.itaiji
 _fetch_dict SKK-JISYO.itaiji.JIS3_4 SKK-JISYO.itaiji.JIS3_4
 _fetch_dict SKK-JISYO.zipcode      zipcode/SKK-JISYO.zipcode
 
+# ─── plist に登録・有効化 ─────────────────────────────────────────────────────
+# macSKK は停止中なので自動検出は走らない。直接 plist に書く。
+echo "==> macSKK dictionary registration"
+if [ ! -f "$_PLIST" ]; then
+	action "macSKK plist not found → open macSKK from Launchpad once, then re-run: bash $DOTFILES_DIR/scripts/ime.sh"
+	return 0 2>/dev/null || exit 0
+fi
+
+_enabled=$(/usr/libexec/PlistBuddy -c "Print :dictionaries" "$_PLIST" 2>/dev/null | grep -c "enabled = true" || echo 0)
+if [ "$_enabled" -eq 17 ]; then
+	skip "all 17 dictionaries already registered and enabled"
+else
+	/usr/libexec/PlistBuddy -c "Delete :dictionaries" "$_PLIST" 2>/dev/null || true
+	/usr/libexec/PlistBuddy -c "Add :dictionaries array" "$_PLIST"
+	_i=0
+	for _name in \
+		SKK-JISYO.L SKK-JISYO.propernoun SKK-JISYO.jinmei SKK-JISYO.fullname \
+		SKK-JISYO.station SKK-JISYO.geo SKK-JISYO.okinawa SKK-JISYO.law \
+		SKK-JISYO.mazegaki SKK-JISYO.emoji SKK-JISYO.china_taiwan \
+		SKK-JISYO.JIS2 SKK-JISYO.JIS2004 SKK-JISYO.JIS3_4 \
+		SKK-JISYO.itaiji SKK-JISYO.itaiji.JIS3_4 SKK-JISYO.zipcode; do
+		/usr/libexec/PlistBuddy \
+			-c "Add :dictionaries:${_i} dict" \
+			-c "Add :dictionaries:${_i}:enabled bool true" \
+			-c "Add :dictionaries:${_i}:encoding integer 4" \
+			-c "Add :dictionaries:${_i}:filename string ${_name}.utf8" \
+			-c "Add :dictionaries:${_i}:saveToUserDict bool true" \
+			-c "Add :dictionaries:${_i}:type string traditional" \
+			"$_PLIST"
+		_i=$((_i + 1))
+	done
+	ok "$_i dictionaries registered and enabled"
+fi
+
+open "/Library/Input Methods/macSKK.app"

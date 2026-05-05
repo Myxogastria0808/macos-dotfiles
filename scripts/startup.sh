@@ -9,7 +9,7 @@ fi
 
 echo "==> Startup"
 _login_items=$(osascript -e 'tell application "System Events" to get the name of every login item' 2>/dev/null || true)
-for _entry in "Tailscale:/Applications/Tailscale.app" "Ollama:/Applications/Ollama.app"; do
+for _entry in "Tailscale:/Applications/Tailscale.app" "Ollama:/Applications/Ollama.app" "Notion:/Applications/Notion.app" "Notion Calendar:/Applications/Notion Calendar.app"; do
 	_name="${_entry%%:*}"
 	_path="${_entry#*:}"
 	if ! echo "$_login_items" | grep -q "$_name"; then

@@ -14,6 +14,19 @@ if ! [ -d "/Applications/Xcode.app" ]; then
 fi
 echo "Xcode: OK"
 
+# ─── Full Disk Access ─────────────────────────────────────────────────────────
+echo "==> Full Disk Access"
+if ! defaults write com.apple.universalaccess _fda_check_ -bool true 2>/dev/null; then
+	action "Full Disk Access is required for some macOS settings."
+	echo "  1. System Settings will open"
+	echo "  2. Enable the toggle for your terminal app"
+	echo "  3. Restart your terminal and re-run install.sh"
+	open "x-apple.systempreferences:com.apple.preference.security?Privacy_AllFiles"
+	exit 1
+fi
+defaults delete com.apple.universalaccess _fda_check_ 2>/dev/null
+ok "Full Disk Access confirmed"
+
 # ─── Git ──────────────────────────────────────────────────────────────────────
 echo "==> Git"
 echo "  Current: user.name  = $(git config --global user.name 2>/dev/null || echo '(not set)')"
@@ -48,15 +61,17 @@ ok "Brewfile applied"
 
 # ─── Nix (Determinate Systems: flakes + nix-command enabled by default) ───────
 "$DOTFILES_DIR/scripts/nix.sh"
+. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
 
 # ─── dotfiles (symlink) ───────────────────────────────────────────────────────
 echo "==> dotfiles"
 ln -sf "$DOTFILES_DIR/config/.zshrc" "$HOME/.zshrc"
+ln -sf "$DOTFILES_DIR/config/.zprofile" "$HOME/.zprofile"
 mkdir -p "$HOME/.config"
 ln -sf "$DOTFILES_DIR/config/starship.toml" "$HOME/.config/starship.toml"
 mkdir -p "$HOME/.config/ghostty"
 ln -sf "$DOTFILES_DIR/config/config.ghostty" "$HOME/.config/ghostty/config"
-ok ".zshrc, starship.toml, ghostty/config → symlinked"
+ok ".zshrc, .zprofile, starship.toml, ghostty/config → symlinked"
 
 # ─── Rust ─────────────────────────────────────────────────────────────────────
 echo "==> Rust"
@@ -69,7 +84,7 @@ fi
 
 # ─── Python ───────────────────────────────────────────────────────────────────
 echo "==> Python"
-if ! uv python list 2>/dev/null | grep -q "cpython"; then
+if ! ls "$HOME/.local/share/uv/python" 2>/dev/null | grep -q "cpython"; then
 	uv python install
 	ok "CPython installed via uv"
 else

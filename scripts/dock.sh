@@ -17,8 +17,8 @@ ok "Position → bottom | Size → 48 | Autohide → off | Show recents → off"
 dockutil --remove all --no-restart
 
 _apps=(
-	"System Settings:/System/Applications/System Settings.app"
 	"Launchpad:/System/Applications/Apps.app"
+	"System Settings:/System/Applications/System Settings.app"
 	"Google Chrome:/Applications/Google Chrome.app"
 	"Discord:/Applications/Discord.app"
 	"Slack:/Applications/Slack.app"
