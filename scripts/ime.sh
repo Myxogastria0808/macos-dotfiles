@@ -51,33 +51,58 @@ _fetch_dict() {
 	ok "$name downloaded"
 }
 
-_fetch_dict SKK-JISYO.L             SKK-JISYO.L
-_fetch_dict SKK-JISYO.propernoun    SKK-JISYO.propernoun
-_fetch_dict SKK-JISYO.jinmei        SKK-JISYO.jinmei
-_fetch_dict SKK-JISYO.fullname      SKK-JISYO.fullname
-_fetch_dict SKK-JISYO.station       SKK-JISYO.station
-_fetch_dict SKK-JISYO.geo           SKK-JISYO.geo
-_fetch_dict SKK-JISYO.okinawa       SKK-JISYO.okinawa
-_fetch_dict SKK-JISYO.law           SKK-JISYO.law
-_fetch_dict SKK-JISYO.mazegaki      SKK-JISYO.mazegaki
-_fetch_dict SKK-JISYO.emoji         SKK-JISYO.emoji
-_fetch_dict SKK-JISYO.china_taiwan  SKK-JISYO.china_taiwan
-_fetch_dict SKK-JISYO.JIS2          SKK-JISYO.JIS2
-_fetch_dict SKK-JISYO.JIS2004       SKK-JISYO.JIS2004
-_fetch_dict SKK-JISYO.JIS3_4        SKK-JISYO.JIS3_4
-_fetch_dict SKK-JISYO.itaiji        SKK-JISYO.itaiji
+_fetch_dict SKK-JISYO.L SKK-JISYO.L
+_fetch_dict SKK-JISYO.propernoun SKK-JISYO.propernoun
+_fetch_dict SKK-JISYO.jinmei SKK-JISYO.jinmei
+_fetch_dict SKK-JISYO.fullname SKK-JISYO.fullname
+_fetch_dict SKK-JISYO.station SKK-JISYO.station
+_fetch_dict SKK-JISYO.geo SKK-JISYO.geo
+_fetch_dict SKK-JISYO.okinawa SKK-JISYO.okinawa
+_fetch_dict SKK-JISYO.law SKK-JISYO.law
+_fetch_dict SKK-JISYO.mazegaki SKK-JISYO.mazegaki
+_fetch_dict SKK-JISYO.emoji SKK-JISYO.emoji
+_fetch_dict SKK-JISYO.china_taiwan SKK-JISYO.china_taiwan
+_fetch_dict SKK-JISYO.JIS2 SKK-JISYO.JIS2
+_fetch_dict SKK-JISYO.JIS2004 SKK-JISYO.JIS2004
+_fetch_dict SKK-JISYO.JIS3_4 SKK-JISYO.JIS3_4
+_fetch_dict SKK-JISYO.itaiji SKK-JISYO.itaiji
 _fetch_dict SKK-JISYO.itaiji.JIS3_4 SKK-JISYO.itaiji.JIS3_4
-_fetch_dict SKK-JISYO.zipcode       zipcode/SKK-JISYO.zipcode
+_fetch_dict SKK-JISYO.zipcode zipcode/SKK-JISYO.zipcode
 
 ok "17 dictionaries placed in Dictionaries/"
 
-# Launch macSKK so it scans the Dictionaries folder and registers files as enabled=false
+# Register all 17 dictionaries via defaults import (goes through cfprefsd, preserves types)
+# Direct plist writes are overridden by cfprefsd cache; defaults write stores strings not bool/int
+killall macSKK 2>/dev/null || true
+_MACSKK_PLIST="$HOME/Library/Containers/net.mtgto.inputmethod.macSKK/Data/Library/Preferences/net.mtgto.inputmethod.macSKK.plist"
+_MACSKK_TMP=$(mktemp /tmp/macskk_dicts.XXXXXX.plist)
+python3 - "$_MACSKK_PLIST" "$_MACSKK_TMP" <<'PYEOF'
+import plistlib, sys
+with open(sys.argv[1], "rb") as f:
+    data = plistlib.load(f)
+dicts = [
+    "SKK-JISYO.L", "SKK-JISYO.propernoun", "SKK-JISYO.jinmei",
+    "SKK-JISYO.fullname", "SKK-JISYO.station", "SKK-JISYO.geo",
+    "SKK-JISYO.okinawa", "SKK-JISYO.law", "SKK-JISYO.mazegaki",
+    "SKK-JISYO.emoji", "SKK-JISYO.china_taiwan", "SKK-JISYO.JIS2",
+    "SKK-JISYO.JIS2004", "SKK-JISYO.JIS3_4", "SKK-JISYO.itaiji",
+    "SKK-JISYO.itaiji.JIS3_4", "SKK-JISYO.zipcode",
+]
+data["dictionaries"] = [
+    {"filename": f"{d}.utf8", "enabled": True, "encoding": 4, "type": "traditional", "saveToUserDict": True}
+    for d in dicts
+]
+with open(sys.argv[2], "wb") as f:
+    plistlib.dump(data, f, fmt=plistlib.FMT_XML)
+PYEOF
+defaults import net.mtgto.inputmethod.macSKK "$_MACSKK_TMP"
+rm -f "$_MACSKK_TMP"
+killall cfprefsd 2>/dev/null || true
+ok "17 dictionaries registered in macSKK preferences"
 open "/Library/Input Methods/macSKK.app"
 
 # ─── Manual steps required ────────────────────────────────────────────────────
 # Input source registration via TIS API (TISEnableInputSource) does not persist
 # to AppleEnabledInputSources on macOS Sequoia — must be done through System Settings.
-# Dictionary plist registration is skipped because macSKK overwrites it on startup;
-# enabling dictionaries from within the app is the only reliable approach.
 action "macSKK: System Settings > Keyboard > Input Sources > + → add macSKK"
-action "macSKK: menu bar input menu → macSKK → Preferences → enable all 17 dictionaries in the Dictionary settings"
+

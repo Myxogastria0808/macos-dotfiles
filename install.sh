@@ -170,6 +170,5 @@ action "System Settings > Privacy & Security > Full Disk Access   → add your t
 action "System Settings > Privacy & Security > Screen Recording   → add ARDAgent       (for VNC screen)"
 action "System Settings > Privacy & Security > Accessibility      → add ARDAgent       (for VNC control)"
 action "macSKK: System Settings > Keyboard > Input Sources > + → add macSKK"
-action "macSKK: menu bar input menu → macSKK → Preferences → enable all 17 dictionaries in the Dictionary settings"
 printf "\033[1m%s\033[0m\n" "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
