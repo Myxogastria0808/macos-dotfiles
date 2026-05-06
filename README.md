@@ -79,11 +79,10 @@ The script will:
 
 The following require manual approval in **System Settings > Privacy & Security**:
 
-| Permission       | Target        | Purpose            |
-| ---------------- | ------------- | ------------------ |
-| Automation       | your terminal | login items        |
-| Screen Recording | ARDAgent      | VNC screen sharing |
-| Accessibility    | ARDAgent      | VNC remote control |
+| Permission       | Target   | Purpose            |
+| ---------------- | -------- | ------------------ |
+| Screen Recording | ARDAgent | VNC screen sharing |
+| Accessibility    | ARDAgent | VNC remote control |
 
 ARDAgent path: `/System/Library/CoreServices/RemoteManagement/ARDAgent.app`
 
@@ -219,9 +218,7 @@ Adds the following apps as hidden login items (start at login, no window shown):
 | Notion          | `/Applications/Notion.app`          |
 | Notion Calendar | `/Applications/Notion Calendar.app` |
 
-Uses `osascript` / System Events to add login items. Already-registered items are skipped.
-
-**Requires**: Automation permission for the terminal app (`System Settings > Privacy & Security > Automation`).
+Uses `osascript` / System Events to add login items. Already-registered items are skipped. macOS prompts for Automation permission automatically on first run.
 
 ---
 
