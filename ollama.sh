@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 set -euo pipefail
 
 if ! command -v ollama &>/dev/null; then
@@ -6,9 +6,10 @@ if ! command -v ollama &>/dev/null; then
 	exit 1
 fi
 
-open -a Ollama
-echo "Waiting for Ollama to start..."
-until ollama list &>/dev/null; do sleep 0.5; done
+if ! curl -sf http://localhost:11434 &>/dev/null; then
+	echo "Error: Ollama is not running. Please start Ollama first."
+	exit 1
+fi
 
 models=(
 	qwen3.5:0.8b
@@ -22,14 +23,12 @@ models=(
 	qwen3.6:35b
 )
 
-pull_model() {
-	local model="$1"
-	ollama pull "$model" 2>&1 | tr '\r' '\n' | grep -v '^[[:space:]]*$' | sed "s/^/[$model] /"
-}
-
 for model in "${models[@]}"; do
-	pull_model "$model" &
+	echo "Pulling $model..."
+	if ollama pull "$model"; then
+		echo "[$model] success"
+	else
+		echo "[$model] failed, skipping"
+	fi
 done
-
-wait
 

@@ -221,6 +221,34 @@ brew-update() {
 	git -C "$DOTFILES_DIR" push
 }
 
+# ollama-serve: set OLLAMA_HOST to Tailscale IP via launchctl
+ollama-serve() {
+	if ! command -v ollama &>/dev/null; then
+		echo "Error: Ollama is not installed."
+		return 1
+	fi
+
+	if ! curl -sf http://localhost:11434 &>/dev/null; then
+		echo "Error: Ollama is not running. Please start Ollama first."
+		return 1
+	fi
+
+	if ! command -v tailscale &>/dev/null; then
+		echo "Error: Tailscale is not installed."
+		return 1
+	fi
+
+	local tailscale_ip
+	tailscale_ip=$(tailscale ip -4)
+	if [[ -z "$tailscale_ip" ]]; then
+		echo "Error: Could not retrieve Tailscale IPv4 address."
+		return 1
+	fi
+
+	launchctl setenv OLLAMA_HOST "$tailscale_ip"
+	echo "OLLAMA_HOST set to $tailscale_ip"
+}
+
 # ─── Aliases ──────────────────────────────────────────────────────────────────
 # Navigation
 alias ..='cd ../'
