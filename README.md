@@ -92,7 +92,7 @@ ARDAgent path: `/System/Library/CoreServices/RemoteManagement/ARDAgent.app`
 **macSKK setup** (`TISEnableInputSource` does not persist on macOS Sequoia):
 
 1. System Settings > Keyboard > Input Sources > **+** → add macSKK
-2. macSKK Settings > Dictionaries → enable all 17 dictionaries
+2. Menu bar input menu → macSKK → **Preferences** → enable all 17 dictionaries in the Dictionary settings
 
 ### Ollama models
 
@@ -168,7 +168,7 @@ Downloads all standard SKK dictionaries from [skk-dev/dict](https://github.com/s
 After running, complete setup in this order:
 
 1. **System Settings > Keyboard > Input Sources > +** → add macSKK
-2. **macSKK Settings > Dictionaries** → enable all 17 dictionaries
+2. **Menu bar input menu → macSKK → Preferences** → enable all 17 dictionaries in the Dictionary settings
 
 **Dictionaries downloaded** (saved to `~/Library/Containers/net.mtgto.inputmethod.macSKK/Data/Documents/Dictionaries/` as UTF-8):
 

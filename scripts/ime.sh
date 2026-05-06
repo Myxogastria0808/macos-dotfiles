@@ -45,7 +45,7 @@ _fetch_dict() {
 	if head -1 "$tmp" | grep -q "coding: utf-8"; then
 		mv "$tmp" "$dest"
 	else
-		iconv -c -f EUC-JP -t UTF-8 "$tmp" >"$dest"
+		iconv -c -f EUC-JP -t UTF-8 "$tmp" | sed '1s/coding: euc-j[^ ]*/coding: utf-8/' >"$dest"
 		rm -f "$tmp"
 	fi
 	ok "$name downloaded"
@@ -71,10 +71,13 @@ _fetch_dict SKK-JISYO.zipcode       zipcode/SKK-JISYO.zipcode
 
 ok "17 dictionaries placed in Dictionaries/"
 
+# Launch macSKK so it scans the Dictionaries folder and registers files as enabled=false
+open "/Library/Input Methods/macSKK.app"
+
 # ─── Manual steps required ────────────────────────────────────────────────────
 # Input source registration via TIS API (TISEnableInputSource) does not persist
 # to AppleEnabledInputSources on macOS Sequoia — must be done through System Settings.
 # Dictionary plist registration is skipped because macSKK overwrites it on startup;
 # enabling dictionaries from within the app is the only reliable approach.
 action "macSKK: System Settings > Keyboard > Input Sources > + → add macSKK"
-action "macSKK: macSKK Settings > Dictionaries → enable all 17 dictionaries"
+action "macSKK: menu bar input menu → macSKK → Preferences → enable all 17 dictionaries in the Dictionary settings"
