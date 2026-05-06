@@ -72,6 +72,8 @@ ln -sf "$DOTFILES_DIR/config/starship.toml" "$HOME/.config/starship.toml"
 mkdir -p "$HOME/.config/ghostty"
 ln -sf "$DOTFILES_DIR/config/config.ghostty" "$HOME/.config/ghostty/config"
 ok ".zshrc, .zprofile, starship.toml, ghostty/config → symlinked"
+# shellcheck disable=SC1090
+source "$HOME/.zshrc"
 
 # ─── Rust ─────────────────────────────────────────────────────────────────────
 echo "==> Rust"
@@ -151,6 +153,7 @@ ok "home-manager switch applied"
 "$DOTFILES_DIR/scripts/finder.sh"
 "$DOTFILES_DIR/scripts/keyboard.sh"
 "$DOTFILES_DIR/scripts/ime.sh"
+"$DOTFILES_DIR/scripts/browser.sh"
 "$DOTFILES_DIR/scripts/dock.sh"
 "$DOTFILES_DIR/scripts/startup.sh"
 "$DOTFILES_DIR/scripts/tailscale.sh"

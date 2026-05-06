@@ -53,6 +53,7 @@ Each script is self-contained and independently executable. All source `scripts/
 | Script                                                         | Requires                                        |
 | -------------------------------------------------------------- | ----------------------------------------------- |
 | `mouse.sh`, `menubar.sh`, `finder.sh`, `keyboard.sh`, `ime.sh` | `defaults` (always present)                     |
+| `browser.sh`                                                   | `defaultbrowser` (from Brewfile)                |
 | `dock.sh`                                                      | `dockutil` (from Brewfile)                      |
 | `startup.sh`                                                   | `osascript` (always present)                    |
 | `tailscale.sh`                                                 | `go` (from Brewfile), installs via `go install` |

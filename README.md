@@ -35,6 +35,7 @@ macos-dotfiles/
     ├── finder.sh        # Finder display settings
     ├── keyboard.sh      # Key repeat speed
     ├── ime.sh           # macSKK input method
+    ├── browser.sh       # Default browser (Google Chrome)
     ├── dock.sh          # Dock layout and pinned apps
     ├── startup.sh       # Login items (Ollama, Notion, Notion Calendar)
     ├── nix.sh           # Nix installer (Determinate Systems)
@@ -72,12 +73,14 @@ The script will:
 7. Symlink dotfiles (`~/.zshrc`, `~/.zprofile`, `~/.config/starship.toml`, `~/.config/ghostty/config`)
 8. Install language toolchains: Rust, Python, R, Julia, Haskell, OCaml, Lean4
 9. Run `home-manager switch` to set up Neovim (nixvim)
-10. Apply macOS system settings (mouse, menu bar, Finder, keyboard, IME, Dock, startup items, Tailscale)
+10. Apply macOS system settings (mouse, menu bar, Finder, keyboard, IME, default browser, Dock, startup items, Tailscale)
 11. Configure hostname, VNC (interactive)
 
 ### After running install.sh
 
-The following require manual approval in **System Settings > Privacy & Security**:
+The following steps require manual action:
+
+**System Settings > Privacy & Security:**
 
 | Permission       | Target   | Purpose            |
 | ---------------- | -------- | ------------------ |
@@ -85,6 +88,11 @@ The following require manual approval in **System Settings > Privacy & Security*
 | Accessibility    | ARDAgent | VNC remote control |
 
 ARDAgent path: `/System/Library/CoreServices/RemoteManagement/ARDAgent.app`
+
+**macSKK setup** (`TISEnableInputSource` does not persist on macOS Sequoia):
+
+1. System Settings > Keyboard > Input Sources > **+** → add macSKK
+2. macSKK Settings > Dictionaries → enable all 17 dictionaries
 
 ### Ollama models
 
@@ -145,12 +153,22 @@ A reboot (or manual Finder restart) is required to apply the changes.
 
 ### `ime.sh` — macSKK Japanese input method
 
-Registers [macSKK](https://github.com/mtgto/macSKK) as an input source via the TIS API and downloads all standard SKK dictionaries from [skk-dev/dict](https://github.com/skk-dev/dict).
+Downloads all standard SKK dictionaries from [skk-dev/dict](https://github.com/skk-dev/dict) and places them in the macSKK Dictionaries folder.
 
-**Input source registration:**
+**What is automated:**
 
-- Enables `net.mtgto.inputmethod.macSKK` via `set-input-source.swift` (TIS API)
-- Restarts SystemUIServer to apply
+- Launches macSKK once to initialize its app container (if not yet initialized)
+- Downloads 17 dictionaries and converts EUC-JP files to UTF-8
+
+**What requires manual setup (macOS Sequoia limitation):**
+
+- `TISEnableInputSource()` via TIS API does not persist to `AppleEnabledInputSources` on macOS Sequoia — input source registration must be done through System Settings
+- macSKK auto-detects files placed in the Dictionaries folder but does not enable them automatically — each dictionary must be enabled manually in macSKK Settings
+
+After running, complete setup in this order:
+
+1. **System Settings > Keyboard > Input Sources > +** → add macSKK
+2. **macSKK Settings > Dictionaries** → enable all 17 dictionaries
 
 **Dictionaries downloaded** (saved to `~/Library/Containers/net.mtgto.inputmethod.macSKK/Data/Documents/Dictionaries/` as UTF-8):
 
@@ -174,7 +192,17 @@ Registers [macSKK](https://github.com/mtgto/macSKK) as an input source via the T
 | `SKK-JISYO.itaiji.JIS3_4` | Variant forms for JIS level 3/4      |
 | `SKK-JISYO.zipcode`       | Japanese postal codes                |
 
-All 17 dictionaries are registered in the macSKK preferences plist with `enabled = true` and encoding `UTF-8`.
+Dictionaries are placed as UTF-8 files. macSKK auto-detects them on next launch but leaves them disabled — enable each one manually in macSKK Settings > Dictionaries.
+
+---
+
+### `browser.sh` — Default browser
+
+Sets Google Chrome as the system default browser using [`defaultbrowser`](https://github.com/nicowillis/defaultbrowser).
+
+The macOS confirmation dialog is dismissed automatically via AppleScript — no manual interaction required.
+
+**Requires**: `defaultbrowser` (installed via Brewfile).
 
 ---
 
