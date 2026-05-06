@@ -21,7 +21,7 @@ echo "==> macSKK dictionaries"
 _MACSKK_DICTS="$HOME/Library/Containers/net.mtgto.inputmethod.macSKK/Data/Documents/Dictionaries"
 _PLIST="$HOME/Library/Containers/net.mtgto.inputmethod.macSKK/Data/Library/Preferences/net.mtgto.inputmethod.macSKK.plist"
 
-# Dictionaries フォルダがなければ macSKK を起動して作らせる
+# Launch macSKK to initialize its container if the Dictionaries folder doesn't exist yet
 if [ ! -d "$_MACSKK_DICTS" ]; then
 	open "/Library/Input Methods/macSKK.app"
 	local i=0
@@ -35,13 +35,12 @@ if [ ! -d "$_MACSKK_DICTS" ]; then
 	return 0 2>/dev/null || exit 0
 fi
 
-# ダウンロード中に macSKK がファイルを検出して enabled=false で追加するのを防ぐため
-# ダウンロード前に停止する
+# Stop macSKK before downloading so it can't auto-detect files and add them as enabled=false
 killall macSKK 2>/dev/null || true
 
 _DICT_BASE="https://raw.githubusercontent.com/skk-dev/dict/master"
 
-# ヘッダの coding: を見て EUC-JP → UTF-8 変換するか判断する
+# Check the coding: header to decide whether to convert from EUC-JP to UTF-8
 _fetch_dict() {
 	local name="$1" repo_path="$2"
 	local dest="$_MACSKK_DICTS/${name}.utf8"
@@ -79,8 +78,8 @@ _fetch_dict SKK-JISYO.itaiji       SKK-JISYO.itaiji
 _fetch_dict SKK-JISYO.itaiji.JIS3_4 SKK-JISYO.itaiji.JIS3_4
 _fetch_dict SKK-JISYO.zipcode      zipcode/SKK-JISYO.zipcode
 
-# ─── plist に登録・有効化 ─────────────────────────────────────────────────────
-# macSKK は停止中なので自動検出は走らない。直接 plist に書く。
+# ─── register and enable dictionaries in macSKK prefs ────────────────────────
+# macSKK is stopped, so write directly to the plist without any race against auto-detection.
 echo "==> macSKK dictionary registration"
 if [ ! -f "$_PLIST" ]; then
 	action "macSKK plist not found → open macSKK from Launchpad once, then re-run: bash $DOTFILES_DIR/scripts/ime.sh"
