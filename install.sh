@@ -169,5 +169,7 @@ printf "\033[1;35m  Manual actions required:\033[0m\n"
 action "System Settings > Privacy & Security > Full Disk Access   → add your terminal  (for macOS defaults)"
 action "System Settings > Privacy & Security > Screen Recording   → add ARDAgent       (for VNC screen)"
 action "System Settings > Privacy & Security > Accessibility      → add ARDAgent       (for VNC control)"
+action "macSKK: System Settings > Keyboard > Input Sources > + → add macSKK"
+action "macSKK: menu bar input menu → macSKK → Preferences → enable all 17 dictionaries in the Dictionary settings"
 printf "\033[1m%s\033[0m\n" "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
