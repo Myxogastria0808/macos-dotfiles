@@ -11,4 +11,6 @@ echo "==> Menu Bar"
 defaults write com.apple.menuextra.clock ShowSeconds -bool true
 defaults write com.apple.menuextra.clock DateFormat -string "EEE d MMM H:mm:ss"
 ok "Clock format → EEE d MMM H:mm:ss (seconds enabled)"
+killall SystemUIServer 2>/dev/null || true
+ok "SystemUIServer restarted"
 

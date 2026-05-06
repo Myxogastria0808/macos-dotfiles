@@ -12,6 +12,6 @@ defaults write com.apple.finder AppleShowAllFiles -bool true
 ok "Hidden files → shown"
 defaults write NSGlobalDomain AppleShowAllExtensions -bool true
 ok "File extensions → always visible"
-killall Finder
+killall Finder 2>/dev/null || true
 ok "Finder restarted"
 

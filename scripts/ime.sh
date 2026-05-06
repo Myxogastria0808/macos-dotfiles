@@ -24,11 +24,12 @@ _PLIST="$HOME/Library/Containers/net.mtgto.inputmethod.macSKK/Data/Library/Prefe
 # Launch macSKK to initialize its container if the Dictionaries folder doesn't exist yet
 if [ ! -d "$_MACSKK_DICTS" ]; then
 	open "/Library/Input Methods/macSKK.app"
-	local i=0
+	i=0
 	while [ ! -d "$_MACSKK_DICTS" ] && [ $i -lt 15 ]; do
 		sleep 1
 		i=$((i + 1))
 	done
+	unset i
 fi
 if [ ! -d "$_MACSKK_DICTS" ]; then
 	action "macSKK container not initialized → launch macSKK manually, then re-run: bash $DOTFILES_DIR/scripts/ime.sh"

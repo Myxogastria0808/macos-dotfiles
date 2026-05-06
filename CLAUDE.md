@@ -34,30 +34,30 @@ bash ollama.sh
 Linear bootstrap script. Sections in order:
 
 1. Xcode check (hard exit if missing)
-2. Git config (interactive, shows current values first)
-3. Homebrew install + `brew bundle`
-4. Nix install (Determinate Systems)
-5. Dotfile symlinks
-6. Language toolchains — each guarded to skip if already installed:
+2. Full Disk Access check (hard exit with instructions if missing)
+3. Git config (interactive, shows current values first)
+4. Homebrew install + `brew bundle`
+5. Nix install (Determinate Systems)
+6. Dotfile symlinks
+7. Language toolchains — each guarded to skip if already installed:
    - Rust (`~/.cargo`), Python (`uv`), R (`rig`), Julia (`juliaup`), Haskell (`~/.ghcup/bin/ghc`), OCaml (`~/.opam`), Lean4 (`~/.elan/bin/lean`)
    - Go is installed via Brewfile; no extra step needed
-7. `home-manager switch` (applies nixvim)
-8. Calls each `scripts/*.sh` in sequence
-9. Final summary with required manual actions
+8. `home-manager switch` (applies nixvim)
+9. Calls each `scripts/*.sh` in sequence
+10. Final summary with required manual actions
 
 ### scripts/
 
 Each script is self-contained and independently executable. All source `scripts/_lib.sh` for shared logging (`ok`, `skip`, `err`, `action`).
 
-| Script                                                         | Requires                                 |
-| -------------------------------------------------------------- | ---------------------------------------- |
-| `mouse.sh`, `menubar.sh`, `finder.sh`, `keyboard.sh`, `ime.sh` | `defaults` (always present)              |
-| `dock.sh`                                                      | `dockutil` (from Brewfile)               |
-| `startup.sh`                                                   | `osascript` (always present)             |
-| `tailscale.sh`                                                 | `tailscale` (from Brewfile)              |
-| `hostname.sh`                                                  | `scutil` (always present), interactive   |
-| `ssh.sh`                                                       | `/usr/sbin/systemsetup` (always present) |
-| `vnc.sh`                                                       | ARDAgent `kickstart` binary, interactive |
+| Script                                                         | Requires                                        |
+| -------------------------------------------------------------- | ----------------------------------------------- |
+| `mouse.sh`, `menubar.sh`, `finder.sh`, `keyboard.sh`, `ime.sh` | `defaults` (always present)                     |
+| `dock.sh`                                                      | `dockutil` (from Brewfile)                      |
+| `startup.sh`                                                   | `osascript` (always present)                    |
+| `tailscale.sh`                                                 | `go` (from Brewfile), installs via `go install` |
+| `hostname.sh`                                                  | `scutil` (always present), interactive          |
+| `vnc.sh`                                                       | ARDAgent `kickstart` binary, interactive        |
 
 ### Logging conventions (`scripts/_lib.sh`)
 

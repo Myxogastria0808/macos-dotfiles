@@ -13,11 +13,13 @@ echo "==> VNC"
 read -rs "VNC_PASSWORD?VNC password (empty to skip): "
 echo ""
 if [ -n "$VNC_PASSWORD" ]; then
-	sudo launchctl unload -w /System/Library/LaunchDaemons/com.apple.screensharing.plist 2>/dev/null || true
+	sudo launchctl bootout system /System/Library/LaunchDaemons/com.apple.screensharing.plist 2>/dev/null || true
 	sudo "$KICKSTART" \
 		-activate -configure -access -on \
+		-privs -all \
 		-clientopts -setvnclegacy -vnclegacy yes \
-		-clientopts -setvncpw -vncpw "$VNC_PASSWORD"
+		-clientopts -setvncpw -vncpw "$VNC_PASSWORD" \
+		-restart -agent
 	ok "Remote Management activated"
 	ok "VNC password set"
 	echo ""

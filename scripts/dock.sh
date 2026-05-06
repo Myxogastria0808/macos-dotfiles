@@ -38,3 +38,6 @@ for _entry in "${_apps[@]}"; do
 done
 unset _apps _entry _name _path
 
+killall Dock
+ok "Dock restarted"
+

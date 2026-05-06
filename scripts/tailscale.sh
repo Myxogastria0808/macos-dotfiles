@@ -22,7 +22,12 @@ if sudo launchctl list 2>/dev/null | grep -q "com.tailscale.tailscaled"; then
 	skip "Tailscale daemon (already registered)"
 else
 	sudo "$_GOBIN/tailscaled" install-system-daemon
-	sleep 2
+	_i=0
+	while [ $_i -lt 15 ] && ! "$_GOBIN/tailscale" status &>/dev/null; do
+		sleep 1
+		_i=$((_i + 1))
+	done
+	unset _i
 	ok "Tailscale system daemon installed"
 fi
 
