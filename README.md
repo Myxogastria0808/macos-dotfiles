@@ -219,7 +219,7 @@ The macOS confirmation dialog is dismissed automatically via AppleScript — no 
 
 1. Launchpad
 2. System Settings
-3. Google Chrome
+3. Firefox
 4. Discord
 5. Slack
 6. Ghostty
