@@ -19,7 +19,7 @@ dockutil --remove all --no-restart
 _apps=(
 	"Launchpad:/System/Applications/Apps.app"
 	"System Settings:/System/Applications/System Settings.app"
-	"Google Chrome:/Applications/Google Chrome.app"
+	"Google Chrome:/Applications/Firefox.app"
 	"Discord:/Applications/Discord.app"
 	"Slack:/Applications/Slack.app"
 	"Ghostty:/Applications/Ghostty.app"

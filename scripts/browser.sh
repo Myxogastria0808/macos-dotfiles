@@ -8,5 +8,6 @@ if ! command -v defaultbrowser &>/dev/null; then
 fi
 
 echo "==> Default browser"
-defaultbrowser chrome
+defaultbrowser firefox
 ok "Default browser → Google Chrome"
+
