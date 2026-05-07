@@ -11,6 +11,8 @@ if ! curl -sf http://localhost:11434 &>/dev/null; then
 	exit 1
 fi
 
+find ~/.ollama/models/blobs -name '*-partial*' -delete 2>/dev/null
+
 models=(
 	qwen3.5:0.8b
 	qwen3.5:2b
@@ -24,6 +26,10 @@ models=(
 )
 
 for model in "${models[@]}"; do
+	if ollama list | awk 'NR>1 {print $1}' | grep -qxF "$model"; then
+		echo "[$model] already exists, skipping"
+		continue
+	fi
 	echo "Pulling $model..."
 	if ollama pull "$model"; then
 		echo "[$model] success"

@@ -34,6 +34,7 @@ fi
 if "$_GOBIN/tailscale" status &>/dev/null; then
 	skip "Tailscale (already connected)"
 else
+	action "Tailscale needs browser authentication — a URL will appear below. Open it to log in."
 	if sudo "$_GOBIN/tailscale" up --ssh --accept-routes; then
 		ok "Tailscale connected (SSH enabled, routes accepted)"
 	else
