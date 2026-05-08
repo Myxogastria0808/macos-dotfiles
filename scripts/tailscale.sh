@@ -42,3 +42,6 @@ else
 		exit 1
 	fi
 fi
+
+# ─── Manual steps required ────────────────────────────────────────────────────
+action "Tailscale: System Settings > Privacy & Security > Full Disk Access → add Tailscale"
