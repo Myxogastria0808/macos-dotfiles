@@ -40,8 +40,7 @@ macos-dotfiles/
     ├── startup.sh       # Login items (Ollama, Notion, Notion Calendar)
     ├── nix.sh           # Nix installer (Determinate Systems)
     ├── tailscale.sh     # Tailscale install + connect with SSH flag
-    ├── hostname.sh      # Computer name / LocalHostName / HostName
-    └── vnc.sh           # Remote Management (VNC)
+    └── hostname.sh      # Computer name / LocalHostName / HostName
 ```
 
 ## Prerequisites
@@ -74,20 +73,11 @@ The script will:
 8. Install language toolchains: Rust, Python, R, Julia, Haskell, OCaml, Lean4
 9. Run `home-manager switch` to set up Neovim (nixvim)
 10. Apply macOS system settings (mouse, menu bar, Finder, keyboard, IME, default browser, Dock, startup items, Tailscale)
-11. Configure hostname, VNC (interactive)
+11. Configure hostname (interactive)
 
 ### After running install.sh
 
 The following steps require manual action:
-
-**System Settings > Privacy & Security:**
-
-| Permission       | Target   | Purpose            |
-| ---------------- | -------- | ------------------ |
-| Screen Recording | ARDAgent | VNC screen sharing |
-| Accessibility    | ARDAgent | VNC remote control |
-
-ARDAgent path: `/System/Library/CoreServices/RemoteManagement/ARDAgent.app`
 
 **macSKK setup** (`TISEnableInputSource` does not persist on macOS Sequoia):
 
@@ -296,28 +286,6 @@ Sets three hostname identifiers interactively, showing current values first:
 `LocalHostName` and `HostName` are always set to the same value. Valid format: alphanumeric and hyphens, must not start or end with a hyphen.
 
 Either prompt can be left empty to skip that setting.
-
----
-
-### `vnc.sh` — Remote Management / VNC (interactive)
-
-Activates macOS Remote Management (ARD/VNC) and sets a VNC password.
-
-Prompts for a VNC password; skipped entirely if left empty.
-
-| Step                        | Command                                                                                                                       |
-| --------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| Unload screen sharing plist | `sudo launchctl unload -w com.apple.screensharing.plist`                                                                      |
-| Activate ARD + set password | `kickstart -activate -configure -access -on -privs -all -clientopts -setvnclegacy -vnclegacy yes -clientopts -setvncpw -vncpw <password> -restart -agent` |
-
-Uses legacy VNC protocol (`-vnclegacy yes`) for compatibility with standard VNC clients.
-
-ARDAgent path: `/System/Library/CoreServices/RemoteManagement/ARDAgent.app`
-
-**Requires** (must grant manually after running):
-
-- `System Settings > Privacy & Security > Screen Recording` → add ARDAgent
-- `System Settings > Privacy & Security > Accessibility` → add ARDAgent
 
 ## Updating
 

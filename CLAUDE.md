@@ -58,7 +58,6 @@ Each script is self-contained and independently executable. All source `scripts/
 | `startup.sh`                                                   | `osascript` (always present)                    |
 | `tailscale.sh`                                                 | `go` (from Brewfile), installs via `go install` |
 | `hostname.sh`                                                  | `scutil` (always present), interactive          |
-| `vnc.sh`                                                       | ARDAgent `kickstart` binary, interactive        |
 
 ### Logging conventions (`scripts/_lib.sh`)
 
